@@ -1,5 +1,7 @@
 package com.example.da_laptrinhandroid;
 
+import static java.security.AccessController.getContext;
+
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -9,16 +11,20 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.nfc.Tag;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.Toast;
 import android.widget.ViewFlipper;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.NetworkError;
 import com.android.volley.NoConnectionError;
 import com.android.volley.ParseError;
@@ -181,13 +187,19 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }, new Response.ErrorListener() {
+
             @Override
             public void onErrorResponse(VolleyError error) {
-
+                CheckConnection.ShowToast_Short(getApplicationContext(),error.toString());
             }
         });
+        jsonArrayRequest.setRetryPolicy(new DefaultRetryPolicy(
+                60000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         requestQueue.add(jsonArrayRequest);
     }
+    private static final String TAG = "MainActivity";
 
     private void GetDataLSP() {
         RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
@@ -268,4 +280,7 @@ public class MainActivity extends AppCompatActivity {
         viewFlipper.setInAnimation(animation_in);
         viewFlipper.setOutAnimation(animation_out);
     }
+
+
+
 }
