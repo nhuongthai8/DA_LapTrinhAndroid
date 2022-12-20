@@ -38,6 +38,7 @@ import com.android.volley.toolbox.JsonRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.da_laptrinhandroid.Adapter.AdapterLSP;
 import com.example.da_laptrinhandroid.Adapter.AdapterSP;
+import com.example.da_laptrinhandroid.Model.GioHang;
 import com.example.da_laptrinhandroid.Model.LoaiSP;
 import com.example.da_laptrinhandroid.Model.SanPham;
 import com.example.da_laptrinhandroid.Util.CheckConnection;
@@ -68,6 +69,9 @@ public class MainActivity extends AppCompatActivity {
 
     ArrayList<SanPham> arraySP;
     AdapterSP adapterSP;
+
+    public static ArrayList<GioHang> arrayGioHang;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -199,7 +203,6 @@ public class MainActivity extends AppCompatActivity {
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         requestQueue.add(jsonArrayRequest);
     }
-    private static final String TAG = "MainActivity";
 
     private void GetDataLSP() {
         RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
@@ -250,6 +253,13 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new GridLayoutManager(getApplicationContext(),2));
         recyclerView.setAdapter(adapterSP);
+        //giỏ hàng
+        if(arrayGioHang!=null){
+            //nếu đã có dữ liệu trong giỏ hàng thì k cần tạo mảng mới để cấp dữ liệu
+        }else{
+            //khi k có dữ liệu thì sẽ khởi tạo và cấp phát bộ nhớ
+            arrayGioHang = new ArrayList<>();
+        }
     }
     private void ActionBar(){
         setSupportActionBar(toolbar);
