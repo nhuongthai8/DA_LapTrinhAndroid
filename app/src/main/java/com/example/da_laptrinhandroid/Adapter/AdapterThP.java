@@ -52,10 +52,10 @@ public class AdapterThP extends BaseAdapter {
             viewHolder = new ViewHolder();
             LayoutInflater inflater =(LayoutInflater) contex.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             view = inflater.inflate(R.layout.row_thucpham,null);
-            viewHolder.txtthucpham =(TextView) view.findViewById(R.id.textviewtensp);
-            viewHolder.txtgiathucpham =(TextView) view.findViewById(R.id.textviewgiasp);
+            viewHolder.txtthucpham =(TextView) view.findViewById(R.id.textview_thucpham);
+            viewHolder.txtgiathucpham =(TextView) view.findViewById(R.id.textview_giathucpham);
             viewHolder.txtndthucpham =(TextView) view.findViewById(R.id.textview_ndthucpham);
-            viewHolder.hinhsp =(ImageView) view.findViewById(R.id.imageview_sp);
+            viewHolder.hinhsp =(ImageView) view.findViewById(R.id.imageview_thucpham);
             view.setTag(viewHolder);
         }else{
             viewHolder =(ViewHolder) view.getTag();

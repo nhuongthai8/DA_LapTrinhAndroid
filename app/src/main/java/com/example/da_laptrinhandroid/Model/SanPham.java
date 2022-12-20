@@ -1,6 +1,8 @@
 package com.example.da_laptrinhandroid.Model;
 
-public class SanPham {
+import java.io.Serializable;
+
+public class SanPham implements Serializable {
     public int id;
     public String tensp;
     public int giatien;
@@ -15,9 +17,9 @@ public class SanPham {
         this.tensp = tensp;
         this.giatien = giatien;
         this.noidung = noidung;
-        this.soluong = soluong;//note
+        this.soluong = soluong;
         this.dvt = dvt;
-        this.hinhsp = hinhsp;//note
+        this.hinhsp = hinhsp;
         this.idlsp = idlsp;
     }
 

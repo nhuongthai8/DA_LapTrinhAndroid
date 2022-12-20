@@ -1,11 +1,18 @@
 package com.example.da_laptrinhandroid;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.AbsListView;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import androidx.appcompat.widget.Toolbar;
 
@@ -41,6 +48,11 @@ public class ThucPhamActivity extends AppCompatActivity {
     int idSP = 0;
     int page =1;
 
+    View footerview;
+    boolean loading = false;
+    boolean outofdata = false;
+    mainHandler mainHandler;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,11 +62,41 @@ public class ThucPhamActivity extends AppCompatActivity {
             GetIdLSP();
             ActionToolbar();
             GetData(page);
+            LoadData();
         }else{
             CheckConnection.ShowToast_Short(getApplicationContext(),"Kiểm tra lại kết nối");
             finish();
         }
 
+    }
+
+    private void LoadData() {
+        listViewtp.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Intent intent = new Intent(getApplicationContext(),ChiTietSP.class);
+                intent.putExtra("thongtinsp",arraySP.get(i));
+                startActivity(intent);
+            }
+        });
+        listViewtp.setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView absListView, int i) {
+
+            }
+            //item1+sphienlen=tongsoluong => layout đang ở vị trí cuối cùng
+            //tongsoluongitem khi vừa load layout sp =0
+            //loading==false chống việc load sp mới dẫn đến crash app, load xong ms cho load tiếp
+            //outofdata==false khi chưa load hết dữ liệu sẽ load tiếp
+            @Override
+            public void onScroll(AbsListView absListView, int item1, int sphienlen, int tongsoluongitem) {
+                if(item1 + sphienlen == tongsoluongitem && tongsoluongitem !=0 && loading == false &&outofdata == false){
+                    loading = true;
+                    ThreadData threadData = new ThreadData();
+                    threadData.start();
+                }
+            }
+        });
     }
 
     private void GetData(int Page) {
@@ -71,7 +113,8 @@ public class ThucPhamActivity extends AppCompatActivity {
                 String dvt ="";
                 String hinhsp="";
                 int idlsp=0;
-                if(response!=null){
+                if(response!=null &&response.length() != 2){
+                    listViewtp.removeFooterView(footerview);
                     try {
                         JSONArray jsonArray = new JSONArray(response);
                         for(int i=0;i<jsonArray.length();i++){
@@ -90,6 +133,10 @@ public class ThucPhamActivity extends AppCompatActivity {
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
+                }else{
+                    outofdata = true;
+                    listViewtp.removeFooterView(footerview);
+                    CheckConnection.ShowToast_Short(getApplicationContext(),"Đã load hết dữ liệu");
                 }
             }
         }, new Response.ErrorListener() {
@@ -130,5 +177,39 @@ public class ThucPhamActivity extends AppCompatActivity {
         arraySP = new ArrayList<>();
         adapterThP = new AdapterThP(getApplicationContext(),arraySP);
         listViewtp.setAdapter(adapterThP);
+        //progress bar
+        LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
+        footerview = inflater.inflate(R.layout.progressbar,null);
+        mainHandler = new mainHandler();
+    }
+
+    public class mainHandler extends Handler{
+        @Override
+        public void handleMessage(@NonNull Message msg) {
+            switch (msg.what){
+                case 0:
+                    listViewtp.addFooterView(footerview);
+                    break;
+                case 1:
+                    GetData(++page);
+                    loading = false;
+                    break;
+            }
+            super.handleMessage(msg);
+        }
+    }
+    public class ThreadData extends Thread{
+        @Override
+        public void run() {
+            mainHandler.sendEmptyMessage(0);
+            try {
+                Thread.sleep(3000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            Message message = mainHandler.obtainMessage(1);
+            mainHandler.sendMessage(message);
+            super.run();
+        }
     }
 }

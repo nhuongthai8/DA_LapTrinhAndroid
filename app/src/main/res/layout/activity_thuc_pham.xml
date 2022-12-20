@@ -6,18 +6,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ThucPhamActivity">
-    <Toolbar
+    <androidx.appcompat.widget.Toolbar
         android:background="#CDDC39"
-        android:title="Trái Cây"
+        app:title="Trái Cây"
         android:titleTextColor="#009688"
         android:id="@+id/toolbar_thucpham"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize">
-    </Toolbar>
+    </androidx.appcompat.widget.Toolbar>
     <ListView
         android:id="@+id/listview_thucpham"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
     </ListView>
 </LinearLayout>
