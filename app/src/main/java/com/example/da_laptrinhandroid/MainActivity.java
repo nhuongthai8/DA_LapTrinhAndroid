@@ -2,6 +2,7 @@ package com.example.da_laptrinhandroid;
 
 import static java.security.AccessController.getContext;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -14,6 +15,8 @@ import android.content.Intent;
 import android.nfc.Tag;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -90,6 +93,23 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    //menu giỏ hàng góc phải
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu,menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.menugiohang:
+                Intent intent = new Intent(getApplicationContext(),com.example.da_laptrinhandroid.ShoppingCart.class);
+                startActivity(intent);
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     private void CatchOnItemListView() {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -146,6 +166,24 @@ public class MainActivity extends AppCompatActivity {
                     case 5:
                         if(CheckConnection.haveNetworkConnection(getApplicationContext())){
                             Intent intent = new Intent(MainActivity.this,ThongTinActivity.class);
+                            startActivity(intent);
+                        }else{
+                            CheckConnection.ShowToast_Short(getApplicationContext(),"Kết nối bị lỗi");
+                        }
+                        drawerLayout.closeDrawer(GravityCompat.START);
+                        break;
+                    case 6:
+                        if(CheckConnection.haveNetworkConnection(getApplicationContext())){
+                            Intent intent = new Intent(MainActivity.this,TimKiem.class);
+                            startActivity(intent);
+                        }else{
+                            CheckConnection.ShowToast_Short(getApplicationContext(),"Kết nối bị lỗi");
+                        }
+                        drawerLayout.closeDrawer(GravityCompat.START);
+                        break;
+                    case 7:
+                        if(CheckConnection.haveNetworkConnection(getApplicationContext())){
+                            Intent intent = new Intent(MainActivity.this,MainActivity.class);
                             startActivity(intent);
                         }else{
                             CheckConnection.ShowToast_Short(getApplicationContext(),"Kết nối bị lỗi");
@@ -222,8 +260,11 @@ public class MainActivity extends AppCompatActivity {
                             e.printStackTrace();
                         }
                     }
-                    arrayLSP.add(4,new LoaiSP(0,"Liên Hệ","https://cdn-icons-png.flaticon.com/128/3771/3771518.png"));
+                    arrayLSP.add(4,new LoaiSP(0,"Góp Ý","https://cdn-icons-png.flaticon.com/128/3771/3771518.png"));
                     arrayLSP.add(5,new LoaiSP(0,"Thông Tin","https://cdn-icons-png.flaticon.com/128/943/943579.png"));
+                    arrayLSP.add(6,new LoaiSP(0,"Tìm Kiếm","https://cdn-icons-png.flaticon.com/512/751/751381.png"));
+                    arrayLSP.add(7,new LoaiSP(0,"Đăng Nhập","https://cdn-icons-png.flaticon.com/512/6555/6555213.png"));
+
                 }
             }
         }, new Response.ErrorListener() {
@@ -245,6 +286,7 @@ public class MainActivity extends AppCompatActivity {
         //loại sản phẩm //sidebar
         arrayLSP = new ArrayList<>();
         arrayLSP.add(0,new LoaiSP(0,"Trang Chủ","https://cdn-icons-png.flaticon.com/128/3804/3804443.png"));//side bar
+
         adapterLSP = new AdapterLSP(arrayLSP,getApplicationContext());
         listView.setAdapter(adapterLSP);
         //sản phẩm
